@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,7 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.model.Todo;
 import com.example.demo.service.TodoService;
 
-@CrossOrigin("*")
+@CrossOrigin("*")		
 @RestController
 public class TodoController {
 
@@ -24,49 +26,57 @@ public class TodoController {
 	private TodoService todoService;
 	
 	@PostMapping("/addtodo")
-	public String addTodo(@RequestBody Todo todo) {
+	public ResponseEntity<String> addTodo(@RequestBody Todo todo) {
 		
 		String res = todoService.addTodo(todo);
 		
-		return res;
+		return ResponseEntity.ok(res);
+		
 	}
 	
 	@DeleteMapping("/deletetodo/{id}")
-	public String deleteTodo(@PathVariable int id) {
+	public ResponseEntity<String> deleteTodo(@PathVariable int id) {
 		
 		String res = todoService.deleteTodo(id);
 		
-		return res;
+		return ResponseEntity.ok(res);
 	}
 	
 	@GetMapping("/getalltodo")
-	public List<Todo> getAllTodo() {
+	public ResponseEntity<List<Todo>> getAllTodo() {
 		
-		List<Todo> res = todoService.getAllTodo();
+		List<Todo> todos = todoService.getAllTodo();
 		
-		return res;
+		return ResponseEntity.ok(todos);
 	}
 	
 	@GetMapping("/gettodobyid/{id}")
-	public Optional<Todo> getTodoById(@PathVariable int id) {
+	public ResponseEntity<?> getTodoById(@PathVariable int id) {
 		
 		Optional<Todo> todo = todoService.getTodoById(id);
 		
-		return todo;
+		if(todo.isPresent()) {
+			return ResponseEntity.ok(todo.get());
+		} else {
+			return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Todo not found");
+		}
 	}
 	
 	@PutMapping("/updatetodo/{id}")
-	public String updateTodo(@RequestBody Todo todo,@PathVariable int id) {	
+	public ResponseEntity<String> updateTodo(@RequestBody Todo todo,@PathVariable int id) {	
+		try {
 		String res = todoService.updateTodo(id, todo);
-		return res;
+		return ResponseEntity.ok(res);
+		}catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating todo");	
+		}
 		
 	}
 	
 	@GetMapping("/welcome")
-	public String welcome() {
-		return "Welcome to bitlabs";
+	public ResponseEntity<String> welcome() {
+		return ResponseEntity.ok("Welcome to bitlabs");
 	}
-
 	
 	
 }
