@@ -4,6 +4,9 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -13,6 +16,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.Todo;
@@ -42,13 +46,31 @@ public class TodoController {
 		return ResponseEntity.ok(res);
 	}
 	
-	@GetMapping("/getalltodo")
+	
+	/*@GetMapping("/getalltodo")
 	public ResponseEntity<List<Todo>> getAllTodo() {
 		
 		List<Todo> todos = todoService.getAllTodo();
 		
 		return ResponseEntity.ok(todos);
-	}
+	}  */
+	
+	
+	@GetMapping("/getalltodo")
+	public ResponseEntity<List<Todo>> getAllTodo(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10") int size) {
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
+		Page<Todo> todoPage = todoService.getAllTodo(pageable);
+		
+		List<Todo> todos = todoPage.getContent();
+		
+		return ResponseEntity.ok(todos);
+		
+	}  
+	
+	
+	
 	
 	@GetMapping("/gettodobyid/{id}")
 	public ResponseEntity<?> getTodoById(@PathVariable int id) {
@@ -72,11 +94,11 @@ public class TodoController {
 		}
 		
 	}
-	
-	@GetMapping("/welcome")
-	public ResponseEntity<String> welcome() {
-		return ResponseEntity.ok("Welcome to bitlabs");
+		
+		@GetMapping("/welcome")
+		public ResponseEntity<String> welcome() {
+			return ResponseEntity.ok("Welcome to bitlabs");
+		}
+		
+		
 	}
-	
-	
-}
