@@ -66,7 +66,7 @@ public class TodoController {
 		List<Todo> todos = todoPage.getContent();
 		
 		return ResponseEntity.ok(todos);
-		
+			
 	}  
 	
 	
@@ -95,10 +95,7 @@ public class TodoController {
 		
 	}
 		
-		@GetMapping("/welcome")
-		public ResponseEntity<String> welcome() {
-			return ResponseEntity.ok("Welcome to bitlabs");
-		}
+	
 		
 		
 	}

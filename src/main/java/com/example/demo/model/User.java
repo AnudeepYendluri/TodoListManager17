@@ -13,6 +13,7 @@ public class User {
 	private int id;
 	private String username;
 	private String password;
+	private String mobileNumber;
 	private String email;
 	private String token;
 	
@@ -23,14 +24,33 @@ public class User {
 	}
 
 
-	public User(int id, String username, String password, String email, String token) {
+	
+
+	public String getMobileNumber() {
+		return mobileNumber;
+	}
+
+
+
+
+	public void setMobileNumber(String mobileNumber) {
+		this.mobileNumber = mobileNumber;
+	}
+
+
+
+
+	public User(int id, String username, String password, String mobileNumber, String email, String token) {
 		super();
 		this.id = id;
 		this.username = username;
 		this.password = password;
+		this.mobileNumber = mobileNumber;
 		this.email = email;
 		this.token = token;
 	}
+
+
 
 
 	public int getId() {
