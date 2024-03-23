@@ -47,15 +47,15 @@ public class TodoController {
 	}
 	
 	
-	/*@GetMapping("/getalltodo")
+	@GetMapping("/getalltodo")
 	public ResponseEntity<List<Todo>> getAllTodo() {
 		
 		List<Todo> todos = todoService.getAllTodo();
 		
 		return ResponseEntity.ok(todos);
-	}  */
+	}  
 	
-	
+	/*
 	@GetMapping("/getalltodo")
 	public ResponseEntity<List<Todo>> getAllTodo(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10") int size) {
 		
@@ -67,7 +67,7 @@ public class TodoController {
 		
 		return ResponseEntity.ok(todos);
 			
-	}  
+	}  */
 	
 	
 	

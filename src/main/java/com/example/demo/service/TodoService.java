@@ -37,19 +37,19 @@ public class TodoService {
 	}
 	
 	
-	/*
+	
 	public List<Todo> getAllTodo() {		
 		
 		List<Todo> t =	todoRepo.findAll();
 	
 		return t;
-	}  */
+	}  
 	
 	
-	
+	/*
 	public Page<Todo> getAllTodo(Pageable pageable) {
 		return todoRepo.findAll(pageable);
-	} 
+	} */
 	
 	
 	public Optional<Todo> getTodoById(int id) {
