@@ -37,7 +37,7 @@ public class TodoService {
 	}
 	
 	
-	
+		
 	public List<Todo> getAllTodo() {		
 		
 		List<Todo> t =	todoRepo.findAll();

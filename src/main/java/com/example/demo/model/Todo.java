@@ -4,6 +4,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 @Entity
 public class Todo {
@@ -11,8 +13,11 @@ public class Todo {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
+	@NotBlank(message = "Title cannot be blank")
 	private String title;
+	@NotBlank(message = "Description cannot be blank")
 	private String description;
+	@NotNull(message = "Completed status cannot be null")
 	private boolean completed;
 	
 	
