@@ -18,68 +18,55 @@ public class UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 	
+	
 	public User registerUser(User user) {
-		user.setPassword(passwordEncoder.encode(user.getPassword()));
-		User user1 = userRepo.save(user);
-		if(user1 != null) {
-			return user1;
+		try {
+			user.setPassword(passwordEncoder.encode(user.getPassword()));
+			return userRepo.save(user);
+		} catch(Exception e) {
+			throw new RuntimeException("failed to register user " + e.getMessage());
 		}
-		return null;
 	}
 
-	/*
-	public User loginUser(String email,String password) {
-		User user = userRepo.findByEmail(email);
-		if(user != null) {
-			if(passwordEncoder.matches(password, user.getPassword())) {
-		return user;
-		}
-		}
-		return null;
-	} */
-	
-	public User loginUser(User user) {
-	    User user1 = userRepo.findByEmail(user.getEmail());
-	    
-	    if (passwordEncoder.matches(user.getPassword(),user1.getPassword())) {
-	        return user1;
-	    } else {
-	        return null;
-	    }
-	}
+
+	  public User loginUser(User user) {
+        try {
+            User storedUser = userRepo.findByEmail(user.getEmail());
+            if (storedUser != null && passwordEncoder.matches(user.getPassword(), storedUser.getPassword())) {
+                return storedUser;
+            } else {
+                return null; // Invalid credentials
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to login user: " + e.getMessage());
+        }
+    }
+	 
 	
 	
+	  public List<User> getAllUsers() {
+        try {
+            return userRepo.findAll();
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve all users: " + e.getMessage());
+        }
+    }
+	  
+
+    public User getUserByEmail(String email) {
+        try {
+            return userRepo.findByEmail(email);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to retrieve user by email: " + e.getMessage());
+        }
+    }
+	 
 	
-	
-	public List<User> getAllUsers() {
-		return userRepo.findAll();
-	}
-	
-	
-	public User getUserByEmail(String email) {
-		return userRepo.findByEmail(email);
-	}
-	
-	
-	/*	
-	public Optional<User> getUserById(int id) {
-		return userRepo.findById(id);
-	}
-	
-	public String deleteUserById(int id) {
-		userRepo.deleteById(id);
-		return "User Deleted Succesfully";
-	}
-	
-	*/
 	
 	
 	public User findByEmail(String email) {
 		return userRepo.findByEmail(email);
 	}
-	
-	
-	
 	
 	
 	

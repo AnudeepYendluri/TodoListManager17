@@ -1,13 +1,19 @@
 package com.example.demo.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import lombok.Data;
 
 @Entity
+@Data
 public class Todo {
 
 	@Id
@@ -17,9 +23,14 @@ public class Todo {
 	private String title;
 	@NotBlank(message = "Description cannot be blank")
 	private String description;
-	@NotNull(message = "Completed status cannot be null")
+	@NotNull(message = "completed status cannot be null")	
 	private boolean completed;
 	
+	
+	@ManyToOne
+	@JoinColumn(name = "user_id")
+    @JsonIgnoreProperties("todos")
+	private User user;
 	
 	public Todo() {
 		super();
@@ -36,46 +47,5 @@ public class Todo {
 	}
 
 
-	public int getId() {
-		return id;
-	}
-
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-
-	public String getTitle() {
-		return title;
-	}
-
-
-	public void setTitle(String title) {
-		this.title = title;
-	}
-
-
-	public String getDescription() {
-		return description;
-	}
-
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-
-	public boolean isCompleted() {
-		return completed;
-	}
-	
-
-	public void setCompleted(boolean completed) {
-		this.completed = completed;
-	}
-	
-	
-	
 	
 }
