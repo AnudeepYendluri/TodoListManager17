@@ -28,10 +28,9 @@ public interface TodoRepository extends JpaRepository<Todo,Integer> {
 		    @Param("description") String description,
 		    @Param("completed") Boolean completed
 		);
-	 
+
+
+	List<Todo> findByUser(User user);
 	 
 	
-
-
-	 
 }

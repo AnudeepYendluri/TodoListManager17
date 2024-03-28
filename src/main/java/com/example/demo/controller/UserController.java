@@ -9,8 +9,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.config.UserAuthenticationEntryPoint;
@@ -64,7 +66,7 @@ public class UserController {
     @PostMapping("/login")
     public ResponseEntity<?> loginUser(@RequestBody User user) {
         try {
-            User authenticatedUser = userService.loginUser(user);
+            User authenticatedUser = userService.authenticate(user);
             if (authenticatedUser != null) {
                 String authToken = userAuthenticationProvider.createToken(authenticatedUser.getEmail());
                 Map<String, Object> responseMap = new HashMap<>();
@@ -79,5 +81,26 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error logging in: " + e.getMessage());
         }
     }
-		 
+    
+    @GetMapping("/getuserid")
+    public ResponseEntity<String> getUserIdFromToken(@RequestHeader("Authorization") String authorizationHeader) {
+        if (authorizationHeader == null || !authorizationHeader.startsWith("Bearer ")) {
+          return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid authorization header");
+        }
+
+        String token = authorizationHeader.substring(7); // Remove "Bearer " prefix
+
+        try {
+          String userId = userAuthenticationProvider.getUserIdFromToken(token); // Call directly
+          if (userId != null) {
+            return ResponseEntity.ok(userId);
+          } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+          }
+        } catch (Exception e) {
+          return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error retrieving user ID");
+        }
+      }
+
+		 	
 }

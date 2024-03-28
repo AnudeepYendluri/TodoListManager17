@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
+import com.example.demo.dto.TodoDTO;
 import com.example.demo.exception.GlobalExceptionHandler.TodoNotFoundException;
 import com.example.demo.model.Todo;
 import com.example.demo.model.User;
@@ -36,8 +36,10 @@ public class TodoController {
 	@Autowired
 	private TodoService todoService;
 	
+	
+	
 	@PostMapping("/addtodo")
-	public ResponseEntity<String> addTodo(@Valid @RequestBody Todo todo , BindingResult bindingResult) {
+    public ResponseEntity<String> addTodo(@Valid @RequestParam("userId") int userId, @RequestBody TodoDTO todoDTO , BindingResult bindingResult) {
 		
 		if(bindingResult.hasErrors()) {
 			StringBuilder errorMessage = new StringBuilder("validation failed: ");
@@ -46,54 +48,62 @@ public class TodoController {
 			}
 			return ResponseEntity.badRequest().body(errorMessage.toString());
 		}
-		
+			
 		try {
-		String res = todoService.addTodo(todo);
+        String result = todoService.addTodo(userId, todoDTO);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+		} catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+    }
+	
+	@DeleteMapping("/deletetodo/{todoId}")
+	public ResponseEntity<String> deleteTodo(@PathVariable int todoId) {
+		try {
+		String res = todoService.deleteTodo(todoId);
 		return ResponseEntity.ok(res);
 		} catch(Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
 		}
-		
 	}
 	
-	@DeleteMapping("/deletetodo/{id}")
-	public ResponseEntity<String> deleteTodo(@PathVariable int id) {
-		try {
-		String res = todoService.deleteTodo(id);
-		return ResponseEntity.ok(res);
-		} catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-		}
-	}
-	
+
+	/*
+	@GetMapping("/getalltodo/{userId}")
+	public ResponseEntity<List<TodoDTO>> getAllTodo(@PathVariable int userId) {
+		List<TodoDTO> todos = todoService.getAllTodos(userId);
+		return ResponseEntity.ok(todos);
+	} */
 	
 	@GetMapping("/getalltodo/{userId}")
-	public ResponseEntity<List<Todo>> getAllTodo(@PathVariable int userId) {
-		try {
-		List<Todo> todos = todoService.getAllTodo(userId);
-		return ResponseEntity.ok(todos);
-		} catch(Exception e) {
-			return ResponseEntity.status(500).body(null);
-		}
-	}  
+	public ResponseEntity<List<TodoDTO>> getAllTodo(@PathVariable int userId) {
+	    try {
+	        List<TodoDTO> todos = todoService.getAllTodos(userId);
+	        return ResponseEntity.ok(todos);
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
+	}
+
 	
 	/*
+	@PutMapping("/updatetodo/{id}")
+	public ResponseEntity<String> updateTodo(@PathVariable int id ,@RequestBody TodoDTO todoDTO) {
+		TodoDTO updatedTodo = todoService.updateTodo(id, todoDTO);
+		return ResponseEntity.ok("Todo Update Succesfully");
+	}  */
 	
-	@GetMapping("/getalltodo")
-	public ResponseEntity<List<Todo>> getAllTodo(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10") int size) {
-		
-		Pageable pageable = PageRequest.of(page, size);
-		
-		Page<Todo> todoPage = todoService.getAllTodo(pageable);
-		
-		List<Todo> todos = todoPage.getContent();
-		
-		return ResponseEntity.ok(todos);
-			
+	
+	@PutMapping("/updatetodo/{id}")
+	public ResponseEntity<String> updateTodo(@PathVariable int id, @RequestBody TodoDTO todoDTO) {
+	    try {
+	        TodoDTO updatedTodo = todoService.updateTodo(id, todoDTO);
+	        return ResponseEntity.ok("Todo Updated Successfully");
+	    } catch (RuntimeException e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+	    }
 	}
-	
-	  name/id
-	*/
+
 	
 	
 	@GetMapping("/gettodobyid/{id}")
@@ -107,6 +117,7 @@ public class TodoController {
         }
     }
 	
+	/*
 	@PutMapping("/updatetodo/{id}")
     public ResponseEntity<String> updateTodo(@PathVariable int id, @RequestBody Todo todo) {
         try {
@@ -115,7 +126,10 @@ public class TodoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-    }
+    } */
+	
+
+	
 	
 	/*
 	// Controller Layer
@@ -132,7 +146,7 @@ public class TodoController {
 	}
 	*/
 	
-	
+	/*
 	@GetMapping("/todos")
     public ResponseEntity<List<Todo>> searchTodos(
             @RequestParam(required = false) Integer userId, 
@@ -153,7 +167,7 @@ public class TodoController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
-    } 
+    } */
 	
 	/*
 	@PostMapping("/todos")
@@ -172,6 +186,53 @@ public class TodoController {
         }
     } */
 	
+	/*
+	@PostMapping("/addtodo")
+	public ResponseEntity<String> addTodo(@Valid @RequestBody Todo todo , BindingResult bindingResult) {
 		
+		if(bindingResult.hasErrors()) {
+			StringBuilder errorMessage = new StringBuilder("validation failed: ");
+			for(FieldError error : bindingResult.getFieldErrors()) {
+				errorMessage.append(error.getDefaultMessage());
+			}
+			return ResponseEntity.badRequest().body(errorMessage.toString());
+		}
+		
+		try {
+		String res = todoService.addTodo(todo);
+		return ResponseEntity.ok(res);
+		} catch(Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+		}
+		
+	}  */
+	
+	/*
+	@GetMapping("/getalltodo/{userId}")
+	public ResponseEntity<List<Todo>> getAllTodo(@PathVariable int userId) {
+		try {
+		List<Todo> todos = todoService.getAllTodo(userId);
+		return ResponseEntity.ok(todos);
+		} catch(Exception e) {
+			return ResponseEntity.status((HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+		}
+	}   */
+		
+/*
+	
+	@GetMapping("/getalltodo")
+	public ResponseEntity<List<Todo>> getAllTodo(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10") int size) {
+		
+		Pageable pageable = PageRequest.of(page, size);
+		
+		Page<Todo> todoPage = todoService.getAllTodo(pageable);
+		
+		List<Todo> todos = todoPage.getContent();
+		
+		return ResponseEntity.ok(todos);
+			
+	}
+	
+	*/
 		
 	}

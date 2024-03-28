@@ -29,7 +29,7 @@ public class UserService {
 	}
 
 
-	  public User loginUser(User user) {
+	  public User authenticate(User user) {
         try {
             User storedUser = userRepo.findByEmail(user.getEmail());
             if (storedUser != null && passwordEncoder.matches(user.getPassword(), storedUser.getPassword())) {
