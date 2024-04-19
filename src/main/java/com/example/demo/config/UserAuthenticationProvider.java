@@ -9,7 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 import com.example.demo.model.User;
-
+import com.example.demo.repository.UserRepository;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -96,7 +96,7 @@ public class UserAuthenticationProvider {
 
 	}
 	
-	
+	/*
 	public String extractUserIdFromToken(String token) {
         try {
             // Verify the token and decode its payload
@@ -109,7 +109,7 @@ public class UserAuthenticationProvider {
         } catch (Exception e) {
             return null;
         }
-    }
+    } */
 	
 	/*
 	public String getUserIdFromToken(String token) {
@@ -137,7 +137,7 @@ public class UserAuthenticationProvider {
 
 		    System.out.println("Decoded JWT payload: " + decodedJWT);  // Print decoded payload
 
-		    String userId = decodedJWT.getSubject();
+		    String userId = decodedJWT.getClaim("userId").asString();
 		    System.out.println("Extracted user ID: " + userId);  // Print extracted user ID
 		    return userId;
 		  } catch (Exception e) {

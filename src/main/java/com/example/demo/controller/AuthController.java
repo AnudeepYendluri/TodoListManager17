@@ -19,7 +19,7 @@ public class AuthController {
 	    public ResponseEntity<String> extractUserIdFromToken(@RequestHeader("Authorization") String authTokenHeader) {
 	        try {
 	            String authToken = authTokenHeader.substring(7); // Remove "Bearer " prefix
-	            String userId = userAuthenticationProvider.extractUserIdFromToken(authToken);
+	            String userId = userAuthenticationProvider.getUserIdFromToken(authToken);
 	            if (userId == null) {
 	                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
 	            }

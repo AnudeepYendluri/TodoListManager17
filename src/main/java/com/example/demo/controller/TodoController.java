@@ -36,8 +36,6 @@ public class TodoController {
 	@Autowired
 	private TodoService todoService;
 	
-	
-	
 	@PostMapping("/addtodo")
     public ResponseEntity<String> addTodo(@Valid @RequestParam("userId") int userId, @RequestBody TodoDTO todoDTO , BindingResult bindingResult) {
 		
@@ -68,12 +66,6 @@ public class TodoController {
 	}
 	
 
-	/*
-	@GetMapping("/getalltodo/{userId}")
-	public ResponseEntity<List<TodoDTO>> getAllTodo(@PathVariable int userId) {
-		List<TodoDTO> todos = todoService.getAllTodos(userId);
-		return ResponseEntity.ok(todos);
-	} */
 	
 	@GetMapping("/getalltodo/{userId}")
 	public ResponseEntity<List<TodoDTO>> getAllTodo(@PathVariable int userId) {
@@ -85,14 +77,7 @@ public class TodoController {
 	    }
 	}
 
-	
-	/*
-	@PutMapping("/updatetodo/{id}")
-	public ResponseEntity<String> updateTodo(@PathVariable int id ,@RequestBody TodoDTO todoDTO) {
-		TodoDTO updatedTodo = todoService.updateTodo(id, todoDTO);
-		return ResponseEntity.ok("Todo Update Succesfully");
-	}  */
-	
+
 	
 	@PutMapping("/updatetodo/{id}")
 	public ResponseEntity<String> updateTodo(@PathVariable int id, @RequestBody TodoDTO todoDTO) {
@@ -117,122 +102,27 @@ public class TodoController {
         }
     }
 	
-	/*
-	@PutMapping("/updatetodo/{id}")
-    public ResponseEntity<String> updateTodo(@PathVariable int id, @RequestBody Todo todo) {
-        try {
-            String res = todoService.updateTodo(id, todo);
-            return ResponseEntity.ok(res);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
-        }
-    } */
-	
-
-	
-	
-	/*
-	// Controller Layer
-	@GetMapping("/todos")
-	public ResponseEntity<List<Todo>> searchTodos(
-	        @RequestParam(required = false) Integer id,
-	        @RequestParam(required = false) String title,
-	        @RequestParam(required = false) String description,
-	        @RequestParam(required = false) Boolean completed
-	) {
-	    
-	    List<Todo> todos = todoService.searchTodos( id, title, description, completed);
-	    return ResponseEntity.ok(todos);
+	@GetMapping("/filter/{userId}")
+	public ResponseEntity<List<TodoDTO>> filterTodos(@PathVariable int userId,
+													 @RequestParam(required = false) String priority,
+	                                                 @RequestParam(required = false) Boolean completed) {
+	    try {
+	        List<TodoDTO> filteredTodos = todoService.filterTodos(userId ,priority, completed);
+	        return ResponseEntity.ok(filteredTodos);
+	    } catch (Exception e) {
+	        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+	    }
 	}
-	*/
-	
-	/*
-	@GetMapping("/todos")
-    public ResponseEntity<List<Todo>> searchTodos(
-            @RequestParam(required = false) Integer userId, 
-            @RequestParam(required = false) Integer id,
-            @RequestParam(required = false) String title,
-            @RequestParam(required = false) String description,
-            @RequestParam(required = false) Boolean completed
-    ) {
-        try {
-            // If userId is not provided, return bad request
-            if (userId == null) {
-                return ResponseEntity.badRequest().body(null);
-            }
 
-            // Call service layer method passing user ID and search parameters
-            List<Todo> todos = todoService.searchTodos(userId, id, title, description, completed);
-            return ResponseEntity.ok(todos);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    } */
-	
-	/*
-	@PostMapping("/todos")
-    public ResponseEntity<List<Todo>> searchTodos(@RequestBody SearchCriteria searchCriteria) {
-        try {
-            // If userId is not provided, return bad request
-            if (searchCriteria.getUserId() == null) {
-                return ResponseEntity.badRequest().body(null);
-            }
-
-            // Call service layer method passing search criteria
-            List<Todo> todos = todoService.searchTodos(searchCriteria);
-            return ResponseEntity.ok(todos);
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-        }
-    } */
-	
-	/*
-	@PostMapping("/addtodo")
-	public ResponseEntity<String> addTodo(@Valid @RequestBody Todo todo , BindingResult bindingResult) {
-		
-		if(bindingResult.hasErrors()) {
-			StringBuilder errorMessage = new StringBuilder("validation failed: ");
-			for(FieldError error : bindingResult.getFieldErrors()) {
-				errorMessage.append(error.getDefaultMessage());
-			}
-			return ResponseEntity.badRequest().body(errorMessage.toString());
-		}
-		
+	@GetMapping("/sort/{userId}")
+	public ResponseEntity<List<TodoDTO>> sortTodos(@PathVariable int userId) {
 		try {
-		String res = todoService.addTodo(todo);
-		return ResponseEntity.ok(res);
-		} catch(Exception e) {
-			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+			List<TodoDTO> sortedTodos = todoService.sortTodos(userId);
+			return ResponseEntity.ok(sortedTodos);
+		} catch (Exception e) {
+			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
-		
-	}  */
-	
-	/*
-	@GetMapping("/getalltodo/{userId}")
-	public ResponseEntity<List<Todo>> getAllTodo(@PathVariable int userId) {
-		try {
-		List<Todo> todos = todoService.getAllTodo(userId);
-		return ResponseEntity.ok(todos);
-		} catch(Exception e) {
-			return ResponseEntity.status((HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-		}
-	}   */
-		
-/*
-	
-	@GetMapping("/getalltodo")
-	public ResponseEntity<List<Todo>> getAllTodo(@RequestParam(defaultValue = "0") int page , @RequestParam(defaultValue = "10") int size) {
-		
-		Pageable pageable = PageRequest.of(page, size);
-		
-		Page<Todo> todoPage = todoService.getAllTodo(pageable);
-		
-		List<Todo> todos = todoPage.getContent();
-		
-		return ResponseEntity.ok(todos);
-			
 	}
 	
-	*/
-		
+	
 	}

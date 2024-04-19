@@ -53,6 +53,7 @@ public class UserService {
     }
 	  
 
+	/*
     public User getUserByEmail(String email) {
         try {
             return userRepo.findByEmail(email);
@@ -60,7 +61,7 @@ public class UserService {
             throw new RuntimeException("Failed to retrieve user by email: " + e.getMessage());
         }
     }
-	 
+	 */
 	
 	
 	

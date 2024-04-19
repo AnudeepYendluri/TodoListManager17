@@ -1,5 +1,6 @@
 	package com.example.demo.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -29,22 +30,7 @@ public class TodoService {
 	@Autowired
 	private TodoMapper todoMapper;
 	
-	
-	/*
-	
-	public String addTodo(int userId , TodoDTO todoDTO) {
-		
-		User user = userRepo.findById(userId);
-		
-		Todo todo = todoMapper.todoDTOtoEntity(todoDTO);
-		
-		todo.setUser(user);
-		
-		todoRepo.save(todo);
-		
-		return "Todo Created Succesfully";
-				
-	}   */
+
 	
 	public String addTodo(int userId, TodoDTO todoDTO) {
 	    try {
@@ -55,6 +41,7 @@ public class TodoService {
 
 	        Todo todo = todoMapper.todoDTOtoEntity(todoDTO);
 	        todo.setUser(user);
+	        todo.setDueDate(todoDTO.getDueDate());
 	        todoRepo.save(todo);
 
 	        return "Todo Created Successfully";
@@ -74,18 +61,7 @@ public class TodoService {
 	        }
 	    }
 	
-	 /*
-	 public List<TodoDTO> getAllTodos(int userId) {
-	        User user = userRepo.findById(userId);
-	        if (user == null) {
-	            return List.of();
-	        }
 
-	        List<Todo> todos = todoRepo.findByUser(user);
-	        return todos.stream()
-	                .map(todoMapper::todoEntityToDTO)
-	                .collect(Collectors.toList());
-	    }  */
 	 
 	 public List<TodoDTO> getAllTodos(int userId) {
 		    try {
@@ -135,83 +111,53 @@ public class TodoService {
 	        }
 	        return todo;
 	    }
-
 	 
 	 
-	 /*
-	 public List<Todo> getAllTodo(int userId) {
-	        try {
-	            return todoRepo.findByUserId(userId);
-	        } catch (Exception e) {
-	            throw new RuntimeException("Failed to retrieve todos: " + e.getMessage());
-	        }
-	    }
-	    
-	   */
-	
-	/*
-	public Page<Todo> getAllTodo(Pageable pageable) {
-		return todoRepo.findAll(pageable);
-	} */
-	
-	
-	 /*
-	 public String updateTodo(int id, Todo todo) {
-	        try {
-	            todo.setId(id);
-	            Todo updatedTodo = todoRepo.save(todo);
-	            if (updatedTodo != null) {
-	                return "Todo updated Successfully";
-	            } else {
-	                throw new RuntimeException("Failed to update todo with id " + id);
-	            }
-	        } catch (Exception e) {
-	            throw new RuntimeException("Something went wrong while updating todo " + e.getMessage());
-	        }
-	    } */
-	
-	 
-	 
-	 /*
-	// Service Layer
-	 public List<Todo> searchTodos(Integer id, String title, String description, Boolean completed) {
-	     return todoRepo.findBySearchCriteria(id, title, description, completed);
-	 } */
-	 
-	 /*
-	 public List<Todo> searchTodos(Integer userId, Integer id, String title, String description, Boolean completed) {
-	        try {
-	            
-	            List<Todo> userTodos = todoRepo.findByUserId(userId);
-	            
-	            if (id == null && title == null && description == null && completed == null) {
-	                return userTodos;
-	            }
-	            
-	            return todoRepo.findBySearchCriteria(id, title, description, completed);
-	        } catch (Exception e) {
-	            throw new RuntimeException("Failed to search todos: " + e.getMessage());
-	        }
-	    }  */
-	 
-	 
-	 /*
-	 public List<Todo> searchTodos(SearchCriteria searchCriteria) {
+	 public List<TodoDTO> filterTodos(int userId, String priority, Boolean completed) {
 		    try {
-		        List<Todo> userTodos = todoRepo.findByUserId(searchCriteria.getUserId());
-		        
-		        if (searchCriteria.isEmpty()) {
-		            return userTodos;
+		        User user = userRepo.findById(userId);
+		        if (user == null) {
+		            throw new RuntimeException("User not found with this id: " + userId);
 		        }
-		        
-		        return todoRepo.findBySearchCriteria(searchCriteria);
+
+		        List<Todo> filteredTodos;
+		        if (priority != null && completed != null) {
+		            filteredTodos = todoRepo.findByUserAndPriorityAndCompleted(user, priority, completed);
+		        } else if (priority != null) {
+		            filteredTodos = todoRepo.findByUserAndPriority(user, priority);
+		        } else if (completed != null) {
+		            filteredTodos = todoRepo.findByUserAndCompleted(user, completed);
+		        } else {
+		            filteredTodos = todoRepo.findByUser(user);
+		        }
+
+		        return filteredTodos.stream()
+		                .map(todoMapper::todoEntityToDTO)
+		                .collect(Collectors.toList());
 		    } catch (Exception e) {
-		        throw new RuntimeException("Failed to search todos: " + e.getMessage());
+		        throw new RuntimeException("Failed to filter todos: " + e.getMessage());
 		    }
 		}
-		
-	*/
-
-
 	 
+	 //sorting
+	 
+	 public List<TodoDTO> sortTodos(int userId ) {
+		
+		 try {
+		 
+		 List<Todo> sortedTodos = todoRepo.findByUserIdOrderByDueDateAsc(userId);
+		 
+         List<TodoDTO> sortedTodoDTOs = sortedTodos.stream()
+                 .map(todoMapper::todoEntityToDTO)
+                 .collect(Collectors.toList());
+         
+         return sortedTodoDTOs;
+         
+		 } catch (Exception e) {
+			 throw new RuntimeException("Failed to sort todos : " + e.getMessage());
+		 }
+		 
+	 }
+
+	
 }

@@ -29,8 +29,20 @@ public interface TodoRepository extends JpaRepository<Todo,Integer> {
 		    @Param("completed") Boolean completed
 		);
 
-
-	List<Todo> findByUser(User user);
 	 
+	List<Todo> findByUser(User user);
+	
+	
+    List<Todo> findByUserAndPriorityAndCompleted(User user, String priority, boolean completed);
+    
+    List<Todo> findByUserAndPriority(User user, String priority);
+    
+    List<Todo> findByUserAndCompleted(User user, boolean completed);
+    
+    List<Todo> findByUserIdOrderByDueDateAsc(int userId);
+    
+    List<Todo> findByUserIdOrderByDueDateDesc(int userId);
+     
+ 
 	
 }
