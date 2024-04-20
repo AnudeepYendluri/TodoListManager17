@@ -48,7 +48,10 @@ public class TodoService {
 	    } catch (Exception e) {
 	        throw new RuntimeException("Failed to add todo: " + e.getMessage());
 	    }
-	}
+	} 
+	
+	
+	
 
 	
 	
@@ -141,23 +144,51 @@ public class TodoService {
 	 
 	 //sorting
 	 
-	 public List<TodoDTO> sortTodos(int userId ) {
-		
-		 try {
-		 
-		 List<Todo> sortedTodos = todoRepo.findByUserIdOrderByDueDateAsc(userId);
-		 
-         List<TodoDTO> sortedTodoDTOs = sortedTodos.stream()
-                 .map(todoMapper::todoEntityToDTO)
-                 .collect(Collectors.toList());
-         
-         return sortedTodoDTOs;
-         
-		 } catch (Exception e) {
-			 throw new RuntimeException("Failed to sort todos : " + e.getMessage());
-		 }
-		 
-	 }
+//	 public List<TodoDTO> sortTodos(int userId ) {
+//		
+//		 try {
+//		 
+//		 List<Todo> sortedTodos = todoRepo.findByUserIdOrderByDueDateAsc(userId);
+//		 
+//         List<TodoDTO> sortedTodoDTOs = sortedTodos.stream()
+//                 .map(todoMapper::todoEntityToDTO)
+//                 .collect(Collectors.toList());
+//         
+//         return sortedTodoDTOs;
+//         
+//		 } catch (Exception e) {
+//			 throw new RuntimeException("Failed to sort todos : " + e.getMessage());
+//		 }
+//		 
+//	 }
+	 
+	 public List<TodoDTO> sortTodos(int userId, String sortOrder) {
+		    try {
+		        List<Todo> sortedTodos;
+		        
+		        if ("asc".equalsIgnoreCase(sortOrder)) {
+		            sortedTodos = todoRepo.findByUserIdOrderByDueDateAsc(userId);
+		        } else if ("desc".equalsIgnoreCase(sortOrder)) {
+		            sortedTodos = todoRepo.findByUserIdOrderByDueDateDesc(userId);
+		        } else {
+		            
+		            throw new IllegalArgumentException("Invalid sortOrder: " + sortOrder);
+		        }
+		        
+		        List<TodoDTO> sortedTodoDTOs = sortedTodos.stream()
+		                .map(todoMapper::todoEntityToDTO)
+		                .collect(Collectors.toList());
+		        
+		        return sortedTodoDTOs;
+		    } catch (Exception e) {
+		        throw new RuntimeException("Failed to sort todos: " + e.getMessage());
+		    }
+		}
+	 
+	 
+	 
+	 
+	
 
 	
 }

@@ -115,14 +115,15 @@ public class TodoController {
 	}
 
 	@GetMapping("/sort/{userId}")
-	public ResponseEntity<List<TodoDTO>> sortTodos(@PathVariable int userId) {
+	public ResponseEntity<List<TodoDTO>> sortTodos(@PathVariable int userId, @RequestParam String sortOrder) {
 		try {
-			List<TodoDTO> sortedTodos = todoService.sortTodos(userId);
-			return ResponseEntity.ok(sortedTodos);
+		List<TodoDTO> sortedTodos = todoService.sortTodos(userId, sortOrder);
+		return ResponseEntity.ok(sortedTodos);
 		} catch (Exception e) {
 			return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
 		}
-	}
+		
+	} 
 	
 	
 	}
